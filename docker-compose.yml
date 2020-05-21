@@ -1,0 +1,9 @@
+version: '3.7'
+services:
+  deconcentrator:
+    build: .
+    restart: unless-stopped
+    ports:
+      - 8338:8338
+    environment:
+      - RASA_ENDPOINT
