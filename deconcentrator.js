@@ -15,11 +15,13 @@
 // use acios for HTTP request to the RASA endpoint
 const axios = require('axios')
 
-// use express app for hadling incoming requests
+// use express app for handling incoming requests
 const express = require('express')
 
 // use body parser to for application/json contents foor express
 const bodyParser = require('body-parser')
+
+const processor = require('./model/processor')
 
 // create express application
 const app = express()

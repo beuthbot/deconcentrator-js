@@ -16,12 +16,15 @@ the confidence store of the intents given from the processors.
 ```json
 {
   "text": "Wie wird das Wetter morgen?",
-  "confidence_score": 0.8
+  "min_confidence_score": 0.8,
+  "processors": ["rasa"]
 }
 ```
-#### More possible properties could be:
-* "strategy" - for using different strategies
-* "processors" - specifying a list of processor to use
+Whereas the specification of the `min_confidence_score` and the
+`processors` is optional. If not minimum confidence score is given
+a default one is used (by now this is `0.8`). For now there is only
+the usage of RASA implemented so there is no effect of specifying
+the `processors` property.
 
 ## `Answer` - Response Model
 ```json
