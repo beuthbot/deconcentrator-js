@@ -1,6 +1,17 @@
 # beuthbot-deconcentrator
 BeuthBot deconcentrator written in JavaScript
 
+## Functionality
+
+The deconcentrator uses different NLU processors to compare their results
+and tries to choose an best fitting answer. The NLU processors like RASA
+must know their domain on their own. The deconcentrator simply compares
+the confidence store of the intents given from the processors.
+
+## Implemented and connected NLU processors
+
+* RASA
+
 ## `Message` - Request Model
 ```json
 {
@@ -55,3 +66,5 @@ BeuthBot deconcentrator written in JavaScript
   "text": "Wie wird das Wetter morgen?"
 }
 ```
+
+## More possible NLU processors
