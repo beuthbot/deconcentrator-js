@@ -3,7 +3,6 @@
  *
  * Contributed by:
  *  - Lukas Danckwerth
- *
  */
 
 
@@ -12,28 +11,46 @@
 // Node.js Modules / Constants
 // === ------------------------------------------------------------------------------------------------------------ ===
 
-// use acios for HTTP request to the RASA endpoint
-const axios = require('axios')
-
 // use express app for handling incoming requests
-const express = require('express')
+const express = require("express");
 
 // use body parser to for application/json contents foor express
-const bodyParser = require('body-parser')
+const bodyParser = require('body-parser');
 
-const processor = require('./model/processor')
+// use util for pretty printed debugging information
+const util = require('util');
+
+// use winston for logging - https://github.com/winstonjs/winston
+const winston = require('winston');
+const logger = winston.createLogger({
+    level: "silly",
+    format: winston.format.cli(),
+    transports: [ new winston.transports.Console() ]
+});
+
+// require custom js files
+const ProcessorQueue = require('./model/processor-queue');
+const DemoProcessor = require('./model/processor');
+const RasaApi = require('./model/rasa-processor');
+
 
 // create express application
-const app = express()
+var app = express();
 
 // current application version
-const application_version = "0.1.0"
+var application_version = "0.1.1";
 
 // default confidence score to use if none is send withing a request
-const default_confidence_score = 0.8
+var default_confidence_score = 0.79;
+
+// default collection of processors to use
+var default_processors = ["rasa", "default"];
+
+// the port used by the express app
+var port = 8338;
 
 // fallback on a default endpoint for RASA in development where `process.env.RASA_ENDPOINT` will not be defined
-const rasa_endpoint = process.env.RASA_ENDPOINT || "http://localhost:5005/model/parse"
+var rasa_endpoint = process.env.RASA_ENDPOINT || "http://localhost:5005/model/parse";
 
 
 // === ------------------------------------------------------------------------------------------------------------ ===
@@ -43,46 +60,97 @@ const rasa_endpoint = process.env.RASA_ENDPOINT || "http://localhost:5005/model/
 // === ------------------------------------------------------------------------------------------------------------ ===
 
 // for parsing application/json
-app.use(bodyParser.json())
+app.use(bodyParser.json());
 
 // for parsing application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: true }))
+app.use(bodyParser.urlencoded({extended: true}));
 
-// present a simple hello text on a `GET` request on the base URL.  this can be use to check whether the deconcentrator
-// is running or not.
-app.get('/', function(req, res) {
-    res.send('Hello from BeuthBot Deconcentrator: ' + application_version)
-    res.end()
-})
 
-// the route the API will call:
-app.post('/message', function(req, res) {
+/**
+ * present a simple hello text on a `GET` request on the base URL.  this can be use to check whether the deconcentrator
+ * is running or not.
+ */
+app.get("/", function(req, res) {
+    res.send("Hello from BeuthBot Deconcentrator: " + application_version);
+    res.end();
+});
+
+/**
+ * route to request the interpretation of a message.
+ */
+app.post("/message", function(req, res) {
 
     // receive message
-    const message = req.body
-    console.log('incoming message: ', message)
+    let message = req.body;
+    let messageJSON = util.inspect(message, false, null, true)
+    logger.info("[Deconcentrator]  incoming message:\n" + messageJSON);
 
     // receive text from message
-    const text = message.text
+    const text = message.text;
 
     if (!text || text.length < 1) {
-        return res.end()
+        return res.end();
     }
 
-    // LD: for now just delegate the request to the rasa endpoint
-    axios.post(rasa_endpoint, message)
-        .catch(function (error) {
-            console.error(error)
-        })
-        .then(function (rasaResponse) {
-            console.log('rasaResponse: ' + rasaResponse.data.text)
-            res.json(rasaResponse.data)
-            res.end()
-        })
-})
+    // receive names of processors to use
+    let processors = message.processors || default_processors
+    logger.info("[Deconcentrator]  processors: " + processors);
 
-const port = 8338
+    // receive confidence score to use
+    let confidenceScore = message.min_confidence_score || default_confidence_score
+    logger.info("[Deconcentrator]  confidence score: " + confidenceScore);
+
+    // create queue of nlu processors
+    var queue = ProcessorQueue.createQueue()
+
+    if (processors.includes("default")) {
+        queue.addProcessor(DemoProcessor);
+    }
+
+    if (processors.includes("rasa")) {
+        queue.addProcessor(RasaApi);
+    }
+
+    queue.completion = function(results) {
+
+        var filtered = results.filter(function (nluResponse) {
+
+            let intent = nluResponse.intent
+            if (!intent) {
+                logger.info("[Deconcentrator]  filter out: " + nluResponse)
+                return false
+            }
+
+            let confidence = intent.confidence
+            if (!confidence || confidence < confidenceScore) {
+                logger.info("[Deconcentrator]  filter out \"" + intent.name + "\" with too low confidence: " + confidence)
+                return false
+            }
+
+            return true
+        })
+
+        let filteredCount = results.length - filtered.length
+        logger.info("[Deconcentrator]  filtered responses: " + filteredCount)
+
+        if (filtered.length > 0) {
+            let result = filtered[0]
+            res.json(result);
+            res.end();
+        } else {
+            res.json({"error": "No intent found."});
+            res.end();
+        }
+    }
+
+    // start the interpretation
+    queue.interpretate(message);
+
+});
+
 app.listen(port, function() {
-    console.log('Deconcentrator listening on port ' + port + '!')
-    console.log('rasa_endpoint: ' + rasa_endpoint)
-})
+    logger.info("Start Deconcentrator " + application_version);
+    logger.info("Listening on port: " + port);
+    logger.info("Default confidence score: " + default_confidence_score);
+    logger.info("RASA endpoint: " + rasa_endpoint + "\n");
+});

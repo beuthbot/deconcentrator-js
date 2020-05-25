@@ -6,13 +6,14 @@ BeuthBot deconcentrator written in JavaScript
 The deconcentrator uses different NLU processors to compare their results
 and tries to choose an best fitting answer. The NLU processors like RASA
 must know their domain on their own. The deconcentrator simply compares
-the confidence store of the intents given from the processors.
+the confidence store of the intents given from the processors and returns
+the found intent.
 
 ## Implemented and connected NLU processors
 
-* RASA
+* RASA ([RASA Link](https://rasa.com/docs/rasa/)) ([BeuthBot RASA Link](https://rasa.com/docs/rasa/))
 
-## `Message` - Request Model
+## Request Schema - `Message`
 ```json
 {
   "text": "Wie wird das Wetter morgen?",
@@ -20,13 +21,16 @@ the confidence store of the intents given from the processors.
   "processors": ["rasa"]
 }
 ```
+
 Whereas the specification of the `min_confidence_score` and the
 `processors` is optional. If not minimum confidence score is given
 a default one is used (by now this is `0.8`). For now there is only
 the usage of RASA implemented so there is no effect of specifying
 the `processors` property.
 
-## `Answer` - Response Model
+## Response Schema - `Answer`
+If return following response.
+The response for a successfully processed request to the deconcentrator contains the following information.
 ```json
 {
   "intent": {
@@ -52,18 +56,7 @@ the `processors` property.
           "grain": "day",
           "type": "value"
       },
-      "entity": "time",
-      "extractor": "DucklingHTTPExtractor"
-    }
-  ],
-  "intent_ranking": [
-    {
-      "name": "wetter",
-      "confidence": 0.9518181086
-    },
-    {
-      "name": "mensa",
-      "confidence": 0.0119743915
+      "entity": "time"
     }
   ],
   "text": "Wie wird das Wetter morgen?"
@@ -71,3 +64,7 @@ the `processors` property.
 ```
 
 ## More possible NLU processors
+
+- [Microsoft LUIS](https://azure.microsoft.com/de-de/services/cognitive-services/language-understanding-intelligent-service/)
+- [Google Cloud NLU](https://cloud.google.com/natural-language/)
+- [IBM Watson NLU](https://www.ibm.com/watson/services/natural-language-understanding/)
