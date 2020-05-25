@@ -35,22 +35,22 @@ const RasaApi = require('./model/rasa-processor');
 
 
 // create express application
-var app = express();
+const app = express();
 
 // current application version
-var application_version = "0.1.1";
+const application_version = "0.1.1";
 
 // default confidence score to use if none is send withing a request
-var default_confidence_score = 0.79;
+const default_confidence_score = 0.79;
 
 // default collection of processors to use
-var default_processors = ["rasa", "default"];
+const default_processors = ["rasa", "default"];
 
 // the port used by the express app
-var port = 8338;
+const port = 8338;
 
 // fallback on a default endpoint for RASA in development where `process.env.RASA_ENDPOINT` will not be defined
-var rasa_endpoint = process.env.RASA_ENDPOINT || "http://localhost:5005/model/parse";
+const rasa_endpoint = process.env.RASA_ENDPOINT || "http://localhost:5005/model/parse";
 
 
 // === ------------------------------------------------------------------------------------------------------------ ===
@@ -152,5 +152,4 @@ app.listen(port, function() {
     logger.info("Start Deconcentrator " + application_version);
     logger.info("Listening on port: " + port);
     logger.info("Default confidence score: " + default_confidence_score);
-    logger.info("RASA endpoint: " + rasa_endpoint + "\n");
 });

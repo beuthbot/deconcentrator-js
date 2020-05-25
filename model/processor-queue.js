@@ -91,10 +91,6 @@ function ProcessorQueue() {
         });
     }
 
-    this.toString = function () {
-        return "ProcessorQueue<processors=[]>"
-    }
-
     return this;
 }
 
