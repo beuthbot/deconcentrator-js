@@ -1,5 +1,8 @@
-# beuthbot-deconcentrator
-BeuthBot deconcentrator written in JavaScript
+# Deconcentrator-js
+
+![Icon](.documentation/DeconcentratorJSLogo200.png "Icon")
+
+> BeuthBot deconcentrator written in JavaScript
 
 ## Functionality
 
