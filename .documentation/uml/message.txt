@@ -1,0 +1,9 @@
+@startuml
+
+class Message {
+  text: String
+  min_confidence_score: Float
+  processors: Array<String>
+}
+
+@enduml

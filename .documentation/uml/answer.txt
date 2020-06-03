@@ -1,0 +1,36 @@
+@startuml
+
+class Answer {
+  text: String
+  intent: Intent
+  entities: Array<Entity>
+  text: String
+}
+
+class Intent {
+  name: String
+  confidence: Float
+}
+
+class Entity {
+  start: Int
+  end: Int
+  text: String
+  value: String
+  confidence: Float
+  additional_info: AdditionalInfo
+  entity: String
+}
+
+class AdditionalInfo {
+  value: String
+  grain: String
+  type: String
+  values: Dictionary<String, Any>
+}
+
+Answer *--- Intent
+Answer *--- Entity
+Entity *--- AdditionalInfo
+
+@enduml

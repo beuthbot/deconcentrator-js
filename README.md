@@ -1,4 +1,4 @@
-# Deconcentrator-js
+# deconcentrator-js
 
 ![Icon](.documentation/DeconcentratorJSLogo100.png "Icon")
 
@@ -50,6 +50,8 @@ a default one is used (by now this is `0.8`). For now there is only
 the usage of RASA implemented so there is no effect of specifying
 the `processors` property.
 
+![alternative text](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/beuthbot/deconcentrator-js/master/.documentation/uml/message.txt)
+
 ## Response Schema - `Answer`
 The response for a successfully processed request to the deconcentrator contains the following information.
 ```json
@@ -91,6 +93,8 @@ The response for a unsuccessfully processed request to the deconcentrator or whe
   "text": "Wie wird das Wetter morgen?"
 }
 ```
+
+![alternative text](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/beuthbot/deconcentrator-js/master/.documentation/uml/answer.txt)
 
 ## Domain
 
