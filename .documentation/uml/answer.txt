@@ -4,7 +4,7 @@ class Answer {
   text: String
   intent: Intent
   entities: Array<Entity>
-  text: String
+  error: String
 }
 
 class Intent {

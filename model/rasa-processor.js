@@ -14,7 +14,7 @@ const logger = winston.createLogger({
     transports: [ new winston.transports.Console() ]
 });
 
-// use `axios` as HTTP client for requesting gateway API
+// use `axios` as HTTP client for requesting rasa API
 const axios = require("axios");
 
 // set default URL of axios HTTP cslient.  fallback on local host for development
