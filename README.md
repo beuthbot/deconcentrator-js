@@ -1,6 +1,6 @@
 # Deconcentrator-js
 
-![Icon](.documentation/DeconcentratorJSLogo200.png "Icon")
+![Icon](.documentation/DeconcentratorJSLogo100.png "Icon")
 
 > BeuthBot deconcentrator written in JavaScript
 
