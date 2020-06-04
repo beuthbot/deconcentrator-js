@@ -6,7 +6,7 @@
 
 ## Feature
 
-The deconcentrator uses different NLU processors to compare their results and tries to choose an best fitting answer. The NLU processors like RASA must know their domain on their own. The deconcentrator simply compares the confidence store of the intents given from the processors and returns the found intent.
+The deconcentrator uses different NLU processors to compare their results and tries to choose an best fitting answer. The NLU processors like RASA must know their domain on their own. The deconcentrator simply compares the confidence score of the intents given from the processors and returns the intent with the highest score.
 
 ## Getting Started
 
@@ -58,28 +58,40 @@ to run a container with the deconcentrator. The docker-compose file also uses po
 
 // tbd
 
+#### `model` directory
+
+Contains all processor files and the `processor-queue.js`.
+
 ### Functionality
 
 ![function](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/beuthbot/deconcentrator-js/master/.documentation/uml/function.txt)
 
-### deconcentrator.js
+#### deconcentrator.js
 
 // tbd
 
-### processor.js
+#### processor-queue.js
 
-// tbd
+For every incoming message the deconcentrator creates a new `ProcessorQueue` (defined in `processor-queue.js`) and adds all available processors to it. When calling the `.interpretate(message)` function of the queue it starts requesting the processors for an interpretation. The number of asynchronous requests can be set with the `numOfSynchronProcessors` property of the queue.
 
-##### Implemented Processors
+#### processor.js
+
+Defines the interface of a NLU processor.
+
+#### Implemented Processors
 * [rasa-processor.js](model/rasa-processor.js)
 
 // tbd
 
-### processor-queue.js
+### Add new NLU processor
 
-// tbd
+#### Setp 1: 
+Create a new NLU processor service.
 
-## Add new NLU processor
+#### Step 2:
+Create a new `PROCESSOR_NAME-processor.js` file in the `model` directory of the project.
+
+#### Step 3:
 
 // tbd
 
@@ -180,7 +192,7 @@ RASA_ENDPOINT=http://0.0.0.0:5005/model/parse
 ## Requirements Analysis
 
 * [x] `/DCF100/` The deconcentrator responds to incoming POST requests by delegating the message to a collection of NLU processor which try to interpretate the given message
-* [x] `/DCF101/` The deconcentrator accepts incoming messages as defined via the Request Schema
+* [ ] `/DCF101/` The deconcentrator accepts incoming messages as defined via the Request Schema
 * [x] `/DCF102/` The deconcentrator sends answers as defined via the Response Schema
 * [x] `/DCF103/` The deconcentrator answers with proper messages for occuring errors
 * [x] `/DCF104/` New NLU processors muss be easy to integrate
