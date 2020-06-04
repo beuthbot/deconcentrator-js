@@ -60,7 +60,7 @@ to run a container with the deconcentrator. The docker-compose file also uses po
 
 ### Functionality
 
-// tbd
+![function](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/beuthbot/deconcentrator-js/master/.documentation/uml/function.txt)
 
 ### deconcentrator.js
 

@@ -1,0 +1,36 @@
+@startuml
+
+participant "gateway" as GW
+
+box "deconcentrator-js" #LightBlue
+participant "deconcentrator.js" as DC
+participant "processor-queue.js" as PQ
+participant "rasa-processor.js" as RP
+participant "PROC_1.js" as P1
+participant "PROC_2.js" as P2
+end box
+
+GW -> DC: request\nwith message
+activate DC
+DC -> DC: create and fill queue
+DC -> PQ: run
+activate PQ
+PQ -> RP: (async) request
+activate RP
+PQ -> P1: (async) request
+activate P1
+RP -> PQ: interpretation
+deactivate RP
+PQ -> P2: (async) request
+activate P2
+P1 -> PQ: interpretation
+deactivate P1
+P2 -> PQ: interpretation
+deactivate P2
+PQ -> DC: all\ninterpretations
+deactivate PQ
+DC -> DC: filter out\nbest intent
+DC -> GW: response\nwith intent
+deactivate DC
+
+@enduml
