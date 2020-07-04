@@ -2,6 +2,7 @@ version: '3.7'
 services:
   deconcentrator:
     build: .
+    container_name: deconcentrator
     restart: unless-stopped
     ports:
       - 8338:8338
