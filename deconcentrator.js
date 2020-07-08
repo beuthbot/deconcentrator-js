@@ -41,7 +41,7 @@ const app = express();
 const application_version = "0.1.1";
 
 // default confidence score to use if none is send withing a request
-const default_confidence_score = 0.79;
+const default_confidence_score = process.env.MIN_CONFIDENCE_SCORE || 0.79;
 
 // default collection of processors to use
 const default_processors = ["rasa", "default"];

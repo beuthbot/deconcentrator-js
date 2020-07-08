@@ -8,3 +8,8 @@ services:
       - 8338:8338
     environment:
       - RASA_ENDPOINT
+
+networks:
+  default:
+    external:
+      name: beuthbot_network
