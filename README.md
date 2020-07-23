@@ -56,11 +56,19 @@ to run a container with the deconcentrator. The docker-compose file also uses po
 
 ### Structure
 
-// tbd
+| Location             | About                                                 |
+| -------------------- | ----------------------------------------------------- |
+| `.documentation/`    | Contains documentation, UML and icon files.           |
+| `model/`             | Contains the processors and the `processor-queue.js`. |
+| `.env.sample`        | Sample environment file.                              |
+| `deconcentrator.js`  | Main js file which is executed by Node.               |
+| `.gitignore`         | Git ignore file.                                      |
+| `docker-compose.yml` | Defines the deconcentrator-js service.                |
+| `Dockerfile`         | Defines the deconcentrator-js container.              |
+| `package.json`       | Node project definition.                              |
+| `README.md`          | This document.                                        |
 
-#### `model` directory
 
-Contains all processor files and the `processor-queue.js`.
 
 ### Functionality
 
@@ -68,7 +76,7 @@ Contains all processor files and the `processor-queue.js`.
 
 #### deconcentrator.js
 
-// tbd
+Uses an express application to listen for incoming messages. For an incoming message it then creates a processor-queue. The processor to can be specified with the `processors` property of an message. See [Request Schema - `Message`](Request-Schema ---Message) for more information. After all processor are done with interpretation the result with a confidence score which is too low are filtered out.
 
 #### processor-queue.js
 
@@ -81,7 +89,9 @@ Defines the interface of a NLU processor.
 #### Implemented Processors
 * [rasa-processor.js](model/rasa-processor.js)
 
-// tbd
+* ...
+
+  
 
 ### Add new NLU processor
 
@@ -93,7 +103,11 @@ Create a new `PROCESSOR_NAME-processor.js` file in the `model` directory of the 
 
 #### Step 3:
 
-// tbd
+Implement the `name` property and the `interpretate` function. Make sure the response looks like the one from rasa or the demo processor.
+
+#### Step 4:
+
+Add the name of the processor to the `default_processors` in the `deconcentrator.js` file.
 
 ## API
 
@@ -102,6 +116,8 @@ The following lists the resources that can be requested with the deconcentrator 
 ```http
 GET   http://localhost:8338
 ```
+
+Returns a live sign of the deconcentrator.
 
 ```http
 POST  http://localhost:8338/messages
@@ -187,18 +203,23 @@ With the `.env` file the deconcentrator can be configured. The following demonst
 
 ```dotenv
 RASA_ENDPOINT=http://0.0.0.0:5005/model/parse
+
+# Optional
+MIN_CONFIDENCE_SCORE=0.85
 ```
+
+
 
 ## Requirements Analysis
 
 * [x] `/DCF100/` The deconcentrator responds to incoming POST requests by delegating the message to a collection of NLU processor which try to interpretate the given message
-* [ ] `/DCF101/` The deconcentrator accepts incoming messages as defined via the Request Schema
+* [x] `/DCF101/` The deconcentrator accepts incoming messages as defined via the Request Schema
 * [x] `/DCF102/` The deconcentrator sends answers as defined via the Response Schema
 * [x] `/DCF103/` The deconcentrator answers with proper messages for occuring errors
 * [x] `/DCF104/` New NLU processors muss be easy to integrate
 * [x] `/DCF105/` The deconcentrator has a default value for the minimum confidence score
 * [x] `/DCF106/` The deconcentrator has a default value for the list of processors
-* [ ] `/DCF107/` The minimum confidence score can be set globally within the Dockerfile
+* [x] `/DCF107/` The minimum confidence score can be set globally within the Dockerfile
 * [ ] `/DCF108/` The list of processors to be used can be set globally within the Dockerfile
 
 ## Build With
@@ -216,4 +237,3 @@ We use [SemVer](http://semver.org/) for versioning. For the versions available, 
 * Lukas Danckwerth - Initial work - [GitHub](https://github.com/lukasdanckwerth)
 
 See also [here](https://github.com/beuthbot/mensa_microservice/graphs/contributors) for a list of contributors
-
