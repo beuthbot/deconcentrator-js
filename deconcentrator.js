@@ -85,6 +85,9 @@ app.post("/message", function(req, res) {
     let messageJSON = util.inspect(message, false, null, true)
     logger.info("[Deconcentrator]  incoming message:\n" + messageJSON);
 
+    const historyAdd = ['deconcentrator'];
+    const history = message.history ? message.history.concat(historyAdd) : historyAdd;
+
     // receive text from message
     const text = message.text;
 
@@ -134,11 +137,11 @@ app.post("/message", function(req, res) {
         logger.info("[Deconcentrator]  filtered responses: " + filteredCount)
 
         if (filtered.length > 0) {
-            let result = filtered[0]
+            let result = Object.assign(filtered[0], {history});
             res.json(result);
             res.end();
         } else {
-            res.json({"error": "No intent found."});
+            res.json({error: "No intent found.", history});
             res.end();
         }
     }
